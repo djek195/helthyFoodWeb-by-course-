@@ -230,58 +230,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
   //XMLHttpRequest
 
-  // const forms = document.querySelectorAll("form");
-
-  // const message = {
-  //   loading: "Завантаження",
-  //   success: "Дякую, ми з Вами скоро зв'яжемося",
-  //   failure: "Щось пішло не так...",
-  // };
-
-  // forms.forEach((item) => postData(item));
-
-  // //функція яка буде відповідати за постинг даних
-  // function postData(form) {
-  //   form.addEventListener("submit", (e) => {
-  //     //відміняємо стандартне поводження браузера
-  //     e.preventDefault();
-
-  //     let statusMessage = document.createElement("div");
-  //     statusMessage.classList.add("status");
-  //     statusMessage.textContent = message.loading;
-  //     form.appendChild(statusMessage);
-
-  //     const requers = new XMLHttpRequest();
-  //     requers.open("POST", "server.php");
-  //     requers.setRequestHeader("Content-type", "application/json; charset=utf-8");
-  //     const formData = new FormData(form);
-
-  //     const object = {};
-  //     formData.forEach(function(value, key) {
-  //       object[key] = value
-  //     });
-
-  //     const json = JSON.stringify(object)
-
-  //     requers.send(json);
-
-  //     requers.addEventListener("load", () => {
-  //       if (requers.status === 200) {
-  //         console.log(requers.response);
-  //         statusMessage.textContent = message.success;
-  //         form.reset();
-  //         setTimeout(() => {
-  //           statusMessage.remove()
-  //         }, 2000)
-  //       } else {
-  //         statusMessage.textContent = message.failure;
-  //       }
-  //     });
-  //   });
-  // }
-
-  //
-  //
   const forms = document.querySelectorAll("form");
 
   //8 текстові повідомлення користувачу
@@ -308,46 +256,33 @@ document.addEventListener("DOMContentLoaded", () => {
       statusMessage.style.cssText = `display: block;
       margin: 0 auto;
       `;
-      //10 відправляємо наш статусмесседж на сторінку
       // form.appendChild(statusMessage);
-      form.insertAdjacentElement('afterend', statusMessage);
-
-      const request = new XMLHttpRequest();
-      request.open("POST", "server.php"); //3 налаштовуємо запит
-
-      //5 налаштовуємо заголовки, які будуть говорити серверу, що буде приходити
-      request.setRequestHeader(
-        "Content-type",
-        "application/json; charset=utf-8"
-      );
+      form.insertAdjacentElement("afterend", statusMessage);
 
       const formData = new FormData(form);
-      const object = {};
 
+      const object = {};
       formData.forEach(function (value, key) {
         object[key] = value;
       });
-      const json = JSON.stringify(object);
 
-      //4 формуємо данні які заповнив користувач
-
-      //6 відправляємо дані
-      request.send(json);
-
-      //7 відслідковуємо завантаження нашого запиту
-      request.addEventListener("load", () => {
-        if (request.status === 200) {
-          console.log(request.response);
-          //11 оновлюємо статус месседж якщо все успішно
+      fetch("server.php", {
+        method: "POST",
+        headers: { "Content-type": "application/json" },
+        body: JSON.stringify(object),
+      })
+        .then((data) => data.text())
+        .then((data) => {
+          console.log(data);
           showThanksModal(message.success);
-          form.reset();
-
           statusMessage.remove();
-        } else {
-          //11 оновлюємо статус месседж якщо все false
+        })
+        .catch(() => {
           showThanksModal(message.failure);
-        }
-      });
+        })
+        .finally(() => {
+          form.reset();
+        });
     });
   }
 
@@ -376,4 +311,19 @@ document.addEventListener("DOMContentLoaded", () => {
       closeModal();
     }, 4000);
   }
+
+  // API - Aplication programming interface (набір даних і можливостей які нам надає якесь готове рішення)
+  //DOM API
+  // інтерфейс з яким користувач може працювати (наприклад в телефоні налаштування вібро, камери)
+  //FETCH API
+
+  // fetch("https://jsonplaceholder.typicode.com/posts", {
+  //   method: "POsT",
+  //   body: JSON.stringify({ name: "Alex" }),
+  //   headers: {
+  //     "Content-type": "application/json",
+  //   },
+  // })
+  //   .then((response) => response.json())
+  //   .then((json) => console.log(json));
 });
