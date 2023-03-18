@@ -326,4 +326,10 @@ document.addEventListener("DOMContentLoaded", () => {
   // })
   //   .then((response) => response.json())
   //   .then((json) => console.log(json));
+
+  // lesson 89
+
+  fetch("http://localhost:3000/menu")
+    .then((data) => data.json())
+    .then((res) => console.log(res));
 });
